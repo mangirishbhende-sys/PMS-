@@ -100,6 +100,7 @@ export async function decideGoalAction(formData: FormData) {
 
 export async function saveSelfAppraisalAction(formData: FormData) {
   const actor = await requireActor();
+  if (actor.role !== "employee") throw new Error("Only employees submit self-appraisals");
   const id = String(formData.get("id"));
   const selfRating = Number(formData.get("selfRating"));
   const selfComments = String(formData.get("selfComments") ?? "").trim();

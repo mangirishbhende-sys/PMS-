@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { clerkClient } from "@clerk/nextjs/server";
 import { getDirectoryUserByEmail, linkClerkId } from "@/lib/repository";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   if (!process.env.CLERK_WEBHOOK_SECRET) {
     return NextResponse.json({ skipped: true }, { status: 200 });
   }

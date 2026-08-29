@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 import { isClerkConfigured } from "@/lib/config";
 import { getDirectoryUserByClerkId, getDirectoryUserByEmail, getDirectoryUserById, linkClerkId } from "@/lib/repository";
@@ -28,21 +29,15 @@ export const getActor = cache(async function getActor(): Promise<DirectoryUser |
   return getDirectoryUserById(id);
 });
 
-export async function requireActor() {
+export async function requireActor(): Promise<DirectoryUser> {
   const actor = await getActor();
-  if (!actor) {
-    const { redirect } = await import("next/navigation");
-    redirect("/");
-  }
+  if (!actor) redirect("/");
   return actor;
 }
 
-export async function requireRole(role: Role) {
+export async function requireRole(role: Role): Promise<DirectoryUser> {
   const actor = await requireActor();
-  if (actor.role !== role) {
-    const { redirect } = await import("next/navigation");
-    redirect(ROLE_HOME[actor.role]);
-  }
+  if (actor.role !== role) redirect(ROLE_HOME[actor.role]);
   return actor;
 }
 
